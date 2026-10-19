@@ -1,11 +1,49 @@
 const $btn = document.getElementById('btn-kick');
 
+function renderHP() {
+    this.renderHPLife();
+    this.renderProgressbarHP();
+}
+
+function renderHPLife() {
+    this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
+}
+
+function renderProgressbarHP() {
+    const percent = this.damageHP / this.defaultHP * 100;
+    this.elProgressbar.style.width = percent + '%';
+
+    this.elProgressbar.classList.remove('low', 'critical');
+    if (percent <= 20) {
+        this.elProgressbar.classList.add('critical');
+    } else if (percent <= 60) {
+        this.elProgressbar.classList.add('low');
+    }
+}
+
+function changeHP(count) {
+    if (this.damageHP <= count) {
+        this.damageHP = 0;
+        this.renderHP();
+        alert('Бедный ' + this.name + ' проиграл бой!');
+        $btn.disabled = true;
+    } else {
+        this.damageHP -= count;
+        this.renderHP();
+    }
+}
+
+
 const character = {
     name: 'Pikachu',
     defaultHP: 100,
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
+    renderHP: renderHP,
+    renderHPLife: renderHPLife,
+    renderProgressbarHP: renderProgressbarHP,
+    changeHP: changeHP,
 };
 
 const enemy = {
@@ -14,49 +52,20 @@ const enemy = {
     damageHP: 100,
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
+    renderHP: renderHP,
+    renderHPLife: renderHPLife,
+    renderProgressbarHP: renderProgressbarHP,
+    changeHP: changeHP,
 };
 
 $btn.addEventListener('click', function () {
-    changeHP(random(20), character);
-    changeHP(random(20), enemy);
+    character.changeHP(random(20));
+    enemy.changeHP(random(20));
 });
 
 function init() {
-    renderHP(character);
-    renderHP(enemy);
-}
-
-function renderHP(person) {
-    renderHPLife(person);
-    renderProgressbarHP(person);
-}
-
-function renderHPLife(person) {
-    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
-}
-
-function renderProgressbarHP(person) {
-    const percent = person.damageHP / person.defaultHP * 100;
-    person.elProgressbar.style.width = percent + '%';
-
-    person.elProgressbar.classList.remove('low', 'critical');
-    if (percent <= 20) {
-        person.elProgressbar.classList.add('critical');
-    } else if (percent <= 60) {
-        person.elProgressbar.classList.add('low');
-    }
-}
-
-function changeHP(count, person) {
-    if (person.damageHP <= count) {
-        person.damageHP = 0;
-        renderHP(person);
-        alert('Бедный ' + person.name + ' проиграл бой!');
-        $btn.disabled = true;
-    } else {
-        person.damageHP -= count;
-        renderHP(person);
-    }
+    character.renderHP();
+    enemy.renderHP();
 }
 
 function random(num) {
