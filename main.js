@@ -1,4 +1,19 @@
-const $btn = document.getElementById('btn-kick');
+const $btnKick = document.getElementById('btn-kick');
+const $btnStrong = document.getElementById('btn-strong');
+
+function createPokemon(name, id) {
+    return {
+        name: name,
+        defaultHP: 100,
+        damageHP: 100,
+        elHP: document.getElementById('health-' + id),
+        elProgressbar: document.getElementById('progressbar-' + id),
+        renderHP: renderHP,
+        renderHPLife: renderHPLife,
+        renderProgressbarHP: renderProgressbarHP,
+        changeHP: changeHP,
+    };
+}
 
 function renderHP() {
     this.renderHPLife();
@@ -25,51 +40,38 @@ function changeHP(count) {
     if (this.damageHP <= count) {
         this.damageHP = 0;
         this.renderHP();
-        alert('Бедный ' + this.name + ' проиграл бой!');
-        $btn.disabled = true;
+        alert('Бідний ' + this.name + ' програв бій!');
+        $btnKick.disabled = true;
+        $btnStrong.disabled = true;
     } else {
         this.damageHP -= count;
         this.renderHP();
     }
 }
 
+function random(num) {
+    return Math.ceil(Math.random() * num);
+}
 
-const character = {
-    name: 'Pikachu',
-    defaultHP: 100,
-    damageHP: 100,
-    elHP: document.getElementById('health-character'),
-    elProgressbar: document.getElementById('progressbar-character'),
-    renderHP: renderHP,
-    renderHPLife: renderHPLife,
-    renderProgressbarHP: renderProgressbarHP,
-    changeHP: changeHP,
-};
+const character = createPokemon('Pikachu', 'character');
+const enemy = createPokemon('Charmander', 'enemy');
 
-const enemy = {
-    name: 'Charmander',
-    defaultHP: 100,
-    damageHP: 100,
-    elHP: document.getElementById('health-enemy'),
-    elProgressbar: document.getElementById('progressbar-enemy'),
-    renderHP: renderHP,
-    renderHPLife: renderHPLife,
-    renderProgressbarHP: renderProgressbarHP,
-    changeHP: changeHP,
-};
-
-$btn.addEventListener('click', function () {
+function fight(maxDamage) {
     character.changeHP(random(20));
-    enemy.changeHP(random(20));
+    enemy.changeHP(random(maxDamage));
+}
+
+$btnKick.addEventListener('click', function () {
+    fight(20);
+});
+
+$btnStrong.addEventListener('click', function () {
+    fight(40);
 });
 
 function init() {
     character.renderHP();
     enemy.renderHP();
-}
-
-function random(num) {
-    return Math.ceil(Math.random() * num);
 }
 
 init();
